@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.driver.MapDriverBookingActivity"></activity>
+        <activity android:name=".activities.client.CalificationDriverActivity"></activity>
+        <activity android:name=".activities.driver.CalificationClientActivity" />
+        <activity android:name=".activities.driver.MapDriverBookingActivity" />
         <activity android:name=".activities.client.MapClientBookingActivity" /> <!-- Servicio para que funcione el envio de notificaciones -->
         <service android:name=".services.MyFirebaseMessagingClient">
             <intent-filter>

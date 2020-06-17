@@ -1,6 +1,6 @@
 package com.nahuelbentos.uberclone.models;
 
-public class ClientBooking {
+public class HistoryBooking {
     private  String idHistoryBooking;
     private  String idClient;
     private  String idDriver;
@@ -14,24 +14,23 @@ public class ClientBooking {
     private  double destinationLat;
     private  double destinationLng;
 
-    public ClientBooking() {
+    private  double calificationClient;
+    private  double calificationDriver;
+    private  long timestamp;
+
+
+    public HistoryBooking() {
     }
 
-    public ClientBooking(String idClient, String idDriver, String origin, String destination, String time, String km, String status, double originLat, double originLng, double destinationLat, double destinationLng) {
-        this.idClient = idClient;
-        this.idDriver = idDriver;
-        this.origin = origin;
-        this.destination = destination;
-        this.time = time;
-        this.km = km;
-        this.status = status;
-        this.originLat = originLat;
-        this.originLng = originLng;
-        this.destinationLat = destinationLat;
-        this.destinationLng = destinationLng;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public ClientBooking(String idHistoryBooking, String idClient, String idDriver, String origin, String destination, String time, String km, String status, double originLat, double originLng, double destinationLat, double destinationLng) {
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public HistoryBooking(String idHistoryBooking, String idClient, String idDriver, String origin, String destination, String time, String km, String status, double originLat, double originLng, double destinationLat, double destinationLng) {
         this.idHistoryBooking = idHistoryBooking;
         this.idClient = idClient;
         this.idDriver = idDriver;
@@ -52,6 +51,22 @@ public class ClientBooking {
 
     public void setIdHistoryBooking(String idHistoryBooking) {
         this.idHistoryBooking = idHistoryBooking;
+    }
+
+    public double getCalificationClient() {
+        return calificationClient;
+    }
+
+    public void setCalificationClient(double calificationClient) {
+        this.calificationClient = calificationClient;
+    }
+
+    public double getCalificationDriver() {
+        return calificationDriver;
+    }
+
+    public void setCalificationDriver(double calificationDriver) {
+        this.calificationDriver = calificationDriver;
     }
 
     public String getIdClient() {
@@ -141,4 +156,5 @@ public class ClientBooking {
     public void setDestinationLng(double destinationLng) {
         this.destinationLng = destinationLng;
     }
+
 }
