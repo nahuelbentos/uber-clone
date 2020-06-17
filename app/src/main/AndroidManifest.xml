@@ -13,27 +13,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <!-- Servicio para que funcione el envio de notificaciones-->
-        <service android:name=".services.MyFirebaseMessagingClient"
-            >
+        <activity android:name=".activities.driver.MapDriverBookingActivity"></activity>
+        <activity android:name=".activities.client.MapClientBookingActivity" /> <!-- Servicio para que funcione el envio de notificaciones -->
+        <service android:name=".services.MyFirebaseMessagingClient">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
+        </service> <!-- Con este tag podemos recibir las acciones de las notificaciones -->
+        <receiver
+            android:name=".receivers.AcceptReceiver"
+            android:enabled="true" />
+        <receiver
+            android:name=".receivers.CancelReceiver"
+            android:enabled="true" />
 
-        <!-- Con este tag podemos recibir las acciones de las notificaciones -->
-        <receiver android:name=".receivers.AcceptReceiver"
-            android:enabled="true">
-
-        </receiver>
-        <receiver android:name=".receivers.CancelReceiver"
-            android:enabled="true">
-
-        </receiver>
-
-
-        <activity android:name=".activities.client.RequestDriverActivity"></activity>
+        <activity android:name=".activities.client.RequestDriverActivity" />
         <activity
             android:name=".activities.client.DetailRequestActivity"
             android:parentActivityName=".activities.client.MapClientActivity" />

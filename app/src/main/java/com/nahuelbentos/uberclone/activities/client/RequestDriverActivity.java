@@ -1,5 +1,6 @@
 package com.nahuelbentos.uberclone.activities.client;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,6 +73,8 @@ public class RequestDriverActivity extends AppCompatActivity {
     private ClientBookingProvider mClientBookingProvider;
     private GoogleAPIProvider mGoogleAPIProvider;
 
+    private ValueEventListener mListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +95,7 @@ public class RequestDriverActivity extends AppCompatActivity {
         mOriginLatLng = new LatLng(mExtraOriginLat, mExtraOriginLng);
         mDestinationLatLng = new LatLng(mExtraDestinationLat, mExtraDestinationLng);
 
-        mGeofireProvider = new GeofireProvider();
+        mGeofireProvider = new GeofireProvider("active_drivers");
         mNotificationProvider = new NotificationProvider();
         mTokenProvider = new TokenProvider();
         mAuthProvider = new AuthProvider();
@@ -221,7 +224,7 @@ public class RequestDriverActivity extends AppCompatActivity {
                             if(response.body() != null){
                                 // La notificacion se envio correctamente
                                 if (response.body().getSuccess() == 1) {
-                                    Toast.makeText(RequestDriverActivity.this, "La notificacin se ha enviado correctamente", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RequestDriverActivity.this, "La notificación se ha enviado correctamente", Toast.LENGTH_SHORT).show();
                                     ClientBooking clientBooking = new ClientBooking(
                                             mAuthProvider.getId(),
                                             mIdDriverFound,
@@ -243,10 +246,10 @@ public class RequestDriverActivity extends AppCompatActivity {
                                     });
 
                                 } else {
-                                    Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la  notificacin", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la  notificación", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la  notificacin", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la  notificación", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -256,7 +259,7 @@ public class RequestDriverActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la notificacion porque el conductor no tiene un token de sesion", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la notificación porque el conductor no tiene un token de sesion", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -270,9 +273,23 @@ public class RequestDriverActivity extends AppCompatActivity {
     private void checkStatusClientBooking() {
 
         // El evento addValueEventListener sirve para obtener los cambios de una propiedad en tiempo real
-        mClientBookingProvider.getStatus(mAuthProvider.getId()).addValueEventListener(new ValueEventListener() {
+        mListener = mClientBookingProvider.getStatus(mAuthProvider.getId()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    String status = dataSnapshot.getValue().toString();
+                    if (status.equals("accepted")){
+                        Intent intent = new Intent(RequestDriverActivity.this, MapClientBookingActivity.class );
+                        startActivity(intent);
+                        finish();
+                    } else if (status.equals("cancelled")){
+                        Toast.makeText(RequestDriverActivity.this, "El conductor no acepto el viaje", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(RequestDriverActivity.this, MapClientActivity.class );
+                        startActivity(intent);
+                        finish();
+
+                    }
+                }
 
             }
 
@@ -284,4 +301,13 @@ public class RequestDriverActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Limpio el Listener ya que sino queda ejecutandose permanentemente
+        if (mListener != null ) {
+            mClientBookingProvider.getStatus(mAuthProvider.getId()).removeEventListener(mListener);
+        }
+
+    }
 }
