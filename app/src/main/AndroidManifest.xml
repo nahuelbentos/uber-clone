@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.driver.NotificationBookingActivity"></activity>
+        <activity android:name=".activities.driver.UpdateProfileDriverActivity" android:parentActivityName=".activities.driver.MapDriverActivity"></activity>
+        <activity
+            android:name=".activities.client.UpdateProfileActivity"
+            android:parentActivityName=".activities.client.MapClientActivity" />
+        <activity android:name=".activities.driver.NotificationBookingActivity" />
         <activity android:name=".activities.client.CalificationDriverActivity" />
         <activity android:name=".activities.driver.CalificationClientActivity" />
         <activity android:name=".activities.driver.MapDriverBookingActivity" />

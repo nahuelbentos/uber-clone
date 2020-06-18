@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -44,6 +45,7 @@ import com.nahuelbentos.uberclone.providers.GeofireProvider;
 import com.nahuelbentos.uberclone.providers.GoogleAPIProvider;
 import com.nahuelbentos.uberclone.providers.TokenProvider;
 import com.nahuelbentos.uberclone.utils.DecodePoints;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -102,6 +104,8 @@ public class MapClientBookingActivity extends AppCompatActivity implements OnMap
     private String mIdDriver;
     private ValueEventListener mListenerStatus;
 
+    private ImageView mImageViewClientBooking;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,7 +137,7 @@ public class MapClientBookingActivity extends AppCompatActivity implements OnMap
         mTextViewOriginDriverBooking = findViewById(R.id.textViewOriginDriverBooking);
         mTextViewDestinationDriverBooking = findViewById(R.id.textViewDestinationDriverBooking);
         mTextViewStatusBooking = findViewById(R.id.textViewStatusBooking);
-
+        mImageViewClientBooking = findViewById(R.id.imageViewClientBooking);
 
         getStatus();
         getClientBooking();
@@ -228,6 +232,13 @@ public class MapClientBookingActivity extends AppCompatActivity implements OnMap
                     String email = dataSnapshot.child("email").getValue().toString();
                     mTextViewDriverBooking.setText(name);
                     mTextViewEmailDriverBooking.setText(email);
+                    String image = "";
+                    if(dataSnapshot.hasChild("image")){
+
+                        image = dataSnapshot.child("image").getValue().toString();
+                        Picasso.with(MapClientBookingActivity.this ).load(image).into(mImageViewClientBooking);
+                    }
+
 
                 }
             }

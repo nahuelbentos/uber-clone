@@ -4,6 +4,22 @@ public class Client {
     String id;
     String name;
     String email;
+    String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Client(String id, String name, String email, String image) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.image = image;
+    }
 
     public Client(String id, String name, String email) {
         this.id = id;

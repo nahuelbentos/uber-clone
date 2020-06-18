@@ -47,10 +47,17 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
+    // squareup
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+
 //    Firebase authenticación y database
     implementation 'com.google.firebase:firebase-auth:19.1.0'
     implementation 'com.google.firebase:firebase-database:19.1.0'
     implementation 'com.firebase:geofire-android:2.2.0'
+
+//      Firabase Storage
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'id.zelory:compressor:2.1.0'
 
 // Push notifications
     implementation 'com.google.firebase:firebase-messaging:20.1.7'

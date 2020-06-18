@@ -15,6 +15,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +60,7 @@ import com.nahuelbentos.uberclone.providers.GoogleAPIProvider;
 import com.nahuelbentos.uberclone.providers.NotificationProvider;
 import com.nahuelbentos.uberclone.providers.TokenProvider;
 import com.nahuelbentos.uberclone.utils.DecodePoints;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -114,6 +116,8 @@ public class MapDriverBookingActivity extends AppCompatActivity implements OnMap
     private boolean mIsCloseToClient = false;
     private Button mButtonStartBooking;
     private Button mButtonFinishBooking;
+
+    private ImageView mImageViewClientBooking;
 
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
@@ -185,6 +189,7 @@ public class MapDriverBookingActivity extends AppCompatActivity implements OnMap
         mTextViewDestinationClientBooking = findViewById(R.id.textViewDestinationClientBooking);
         mButtonStartBooking = findViewById(R.id.btnStartBooking);
         mButtonFinishBooking = findViewById(R.id.btnFinishBooking);
+        mImageViewClientBooking = findViewById(R.id.imageViewClientBooking);
         mExtraIdClient = getIntent().getStringExtra("idClient");
 
 //        mButtonStartBooking.setEnabled(false);
@@ -351,6 +356,13 @@ public class MapDriverBookingActivity extends AppCompatActivity implements OnMap
                 if (dataSnapshot.exists()){
                     String email = dataSnapshot.child("email").getValue().toString();
                     String name = dataSnapshot.child("name").getValue().toString();
+                    String image = "";
+                    if(dataSnapshot.hasChild("image")){
+
+                        image = dataSnapshot.child("image").getValue().toString();
+                        Picasso.with(MapDriverBookingActivity.this ).load(image).into(mImageViewClientBooking);
+                    }
+
                     mTextViewEmailClientBooking.setText(email);
                     mTextViewClientBooking.setText(name);
                 }

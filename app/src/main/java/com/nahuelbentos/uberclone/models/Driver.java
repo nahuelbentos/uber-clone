@@ -7,8 +7,17 @@ public class Driver {
     String email;
     String vehicleBrand;
     String vehiclePlate;
+    String image;
 
     public Driver() {
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Driver(String id, String name, String email, String vehicleBrand, String vehiclePlate) {

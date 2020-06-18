@@ -1,5 +1,7 @@
 package com.nahuelbentos.uberclone.providers;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -23,6 +25,20 @@ public class ClientProvider {
 
         return database.child(client.getId()).setValue(map);
     }
+    public Task<Void> update(Client client){
+        Log.d("ErrorUpdate", "update: " + client);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", client.getName());
+        map.put("image", client.getImage());
+
+        Log.d("ErrorUpdate", "client.getName(): " + client.getName());
+        Log.d("ErrorUpdate", "client.getImage(): " + client.getImage());
+        Log.d("ErrorUpdate", "client.getId(): " + client.getId());
+
+        return database.child(client.getId()).updateChildren(map);
+    }
+
 
     public DatabaseReference getClient(String idClient){
         return database.child(idClient);
