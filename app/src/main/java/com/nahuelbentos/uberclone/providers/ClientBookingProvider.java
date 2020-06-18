@@ -30,6 +30,11 @@ public class ClientBookingProvider {
         Map<String, Object> map = new HashMap<>();
         map.put("idHistoryBooking", idPush);
         return mDatabase.child(idClientBooking).updateChildren(map);
+
+    }
+
+    public Task<Void> delete(String idClientBooking){
+        return mDatabase.child(idClientBooking).removeValue();
     }
 
     // Crear referencia a una propiedad

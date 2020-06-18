@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,13 +97,29 @@ public class RequestDriverActivity extends AppCompatActivity {
         mDestinationLatLng = new LatLng(mExtraDestinationLat, mExtraDestinationLng);
 
         mGeofireProvider = new GeofireProvider("active_drivers");
+
         mNotificationProvider = new NotificationProvider();
         mTokenProvider = new TokenProvider();
         mAuthProvider = new AuthProvider();
         mClientBookingProvider = new ClientBookingProvider();
         mGoogleAPIProvider = new GoogleAPIProvider(RequestDriverActivity.this);
 
+         mButtonCancelRequest.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 cancelRequest();
+             }
+         });
         getClosestDriver();
+    }
+
+    private void cancelRequest() {
+        mClientBookingProvider.delete(mAuthProvider.getId()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                sendNotificationCancel();
+            }
+        });
     }
 
     private void getClosestDriver(){
@@ -217,6 +234,11 @@ public class RequestDriverActivity extends AppCompatActivity {
                             "Destino: " + mExtraDestination);
 
                     map.put("idClient", mAuthProvider.getId());
+
+                    map.put("origin", mExtraOrigin);
+                    map.put("destination", mExtraDestination);
+                    map.put("min", time);
+                    map.put("distance", km);
                     FCMBody fcmBody = new FCMBody(token, "high", "4500s",  map );
                     mNotificationProvider.sendNotification(fcmBody).enqueue(new Callback<FCMResponse>() {
                         @Override
@@ -244,6 +266,57 @@ public class RequestDriverActivity extends AppCompatActivity {
                                             checkStatusClientBooking();
                                         }
                                     });
+
+                                } else {
+                                    Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la  notificación", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la  notificación", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<FCMResponse> call, Throwable t) {
+                            Log.d("Error", "onFailure: Error:  " + t.getMessage());
+                        }
+                    });
+                } else {
+                    Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la notificación porque el conductor no tiene un token de sesion", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void sendNotificationCancel() {
+        mTokenProvider.getToken(mIdDriverFound).addListenerForSingleValueEvent(new ValueEventListener() {
+            // DataSnapshot contiene la informacin del nodo que estamos intentando obtener.
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+
+                    String token = dataSnapshot.child("token").getValue().toString();
+                    Map<String, String> map = new HashMap<>();
+                    map.put("title", "VIAJE CANCELADO" );
+                    map.put("body",
+                            "El cliente cancelo la solicitud. ");
+
+
+                    FCMBody fcmBody = new FCMBody(token, "high", "4500s",  map );
+                    mNotificationProvider.sendNotification(fcmBody).enqueue(new Callback<FCMResponse>() {
+                        @Override
+                        public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                            if(response.body() != null){
+                                // La notificacion se envio correctamente
+                                if (response.body().getSuccess() == 1) {
+                                    Toast.makeText(RequestDriverActivity.this, "La solicitud se cancelo correctamente", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(RequestDriverActivity.this, MapClientActivity.class);
+                                    startActivity(intent);
+                                    finish();
 
                                 } else {
                                     Toast.makeText(RequestDriverActivity.this, "No se pudo enviar la  notificación", Toast.LENGTH_SHORT).show();
